@@ -15,8 +15,8 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
 
     @Override
     public void run(String...args) throws Exception {
-        studentGenerationService.generateCharacteristics(5);
-        studentGenerationService.generateDisciplines(10);
-        studentGenerationService.generateStudents(30);
+        studentGenerationService.generateCharacteristics(10);
+        studentGenerationService.generateDisciplines(40);
+        studentGenerationService.generateStudents(100);
     }
 }

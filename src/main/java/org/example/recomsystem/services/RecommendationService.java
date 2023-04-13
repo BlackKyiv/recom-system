@@ -32,15 +32,21 @@ public class RecommendationService {
     public Map<Long, Double> calculateDisciplinesRateForStudent(long studentId) throws NotFoundException {
         List<Long> commonStudentIds = findStudentIdsWithCommonDisciplines(studentId);
         Map<Long, Double> studentCoefficients = calculatePearsonCoefficients(studentId, commonStudentIds);
-        Map<Long, Double> disciplinesRate = disciplineRepository.findAll().stream()
+        Map<Long, Double> disciplinesRate = disciplineRepository.findAllByIdNotIn(
+                studentRepository.findById(studentId)
+                        .get().getDisciplines().stream()
+                        .map(Discipline::getId).collect(Collectors.toList()))
+                .stream()
                 .map(d -> Map.entry(d.getId(), 0.0))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         List<Student> commonStudents = studentRepository.findAllById(commonStudentIds);
         for (Student st : commonStudents) {
             for (Discipline d : st.getDisciplines()) {
-                disciplinesRate.put(
-                        d.getId(),
-                        disciplinesRate.get(d.getId()) + studentCoefficients.get(st.getId()));
+                if (disciplinesRate.containsKey(d.getId())) {
+                    disciplinesRate.put(
+                            d.getId(),
+                            disciplinesRate.get(d.getId()) + studentCoefficients.get(st.getId()));
+                }
             }
         }
         System.out.println(disciplinesRate);
@@ -78,7 +84,6 @@ public class RecommendationService {
     }
 
     public static double findCorrelation(List<Integer> xs, List<Integer> ys) {
-        //TODO: check here that arrays are not null, of the same length etc
 
         double sx = 0.0;
         double sy = 0.0;
@@ -128,7 +133,7 @@ public class RecommendationService {
 
         List<Integer> targetStRatings = new ArrayList<>(student.getCharacteristicRatings().values());
         for (Long stId : otherRatings.keySet()) {
-            List<Integer> stRatings = new ArrayList<>(student.getCharacteristicRatings().values());
+            List<Integer> stRatings = new ArrayList<>(studentRepository.findById(stId).get().getCharacteristicRatings().values());
             correlations.put(stId, findCorrelation(targetStRatings, stRatings));
         }
 

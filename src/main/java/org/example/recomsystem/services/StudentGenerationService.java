@@ -83,7 +83,7 @@ public class StudentGenerationService {
             Collections.shuffle(disciplines);
             Student student = new Student(null, faker.name().fullName(), faker.number().numberBetween(18, 30),
                     faker.internet().emailAddress(), faker.address().fullAddress(),
-                    new ArrayList<>(disciplines.subList(0, faker.number().numberBetween(5, 9))), null);
+                    new ArrayList<>(disciplines.subList(0, faker.number().numberBetween(5, 20))), null);
 
             studentRepository.save(student);
             Set<StudentCharacteristics> studentCharacteristics = new HashSet<>();

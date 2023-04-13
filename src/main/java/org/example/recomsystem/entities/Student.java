@@ -6,10 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 @Getter
@@ -37,7 +34,7 @@ public class Student {
     List<StudentCharacteristics> characteristics;
 
     public Map<String, Integer> getCharacteristicRatings() {
-        Map<String, Integer> studentRatings = new HashMap<>();
+        Map<String, Integer> studentRatings = new TreeMap<>();
         characteristics.forEach(ch -> studentRatings.put(ch.getCharacteristics().getName(), ch.getRating()));
         return studentRatings;
     }

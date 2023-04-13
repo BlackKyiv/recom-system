@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.recomsystem.entities.Characteristics;
 import org.example.recomsystem.entities.Discipline;
 import org.example.recomsystem.entities.Student;
+import org.example.recomsystem.entities.StudentCharacteristics;
 import org.example.recomsystem.repositories.CharacteristicsRepository;
 import org.example.recomsystem.repositories.DisciplineRepository;
 import org.example.recomsystem.services.DisciplineService;
@@ -58,9 +59,19 @@ public class StudentController {
         for (Long id : pearsonCoefficients.keySet()) {
             stPearson.put(studentService.getStudentById(id), pearsonCoefficients.get(id));
         }
+
+        Map<Student, List<Integer>> commonStudentChars = new HashMap<>();
+
+        for (Long id : studentsWithCommon) {
+            Student student = studentService.getStudentById(id);
+            commonStudentChars.put(student, student.getCharacteristics().stream().map(StudentCharacteristics::getRating).collect(Collectors.toList()));
+        }
+
         mav.addObject("stPearson", stPearson);
         mav.addObject("student", studentService.getStudentById(studId));
+        mav.addObject("studentChars", studentService.getStudentById(studId).getCharacteristics().stream().map(StudentCharacteristics::getRating).collect(Collectors.toList()));
         mav.addObject("characteristics", characteristicsRepository.findAll());
+        mav.addObject("commonStudentChars", commonStudentChars);
 
 
         Map<Long, Double> res = recommendationService.calculateDisciplinesRateForStudent(studId);

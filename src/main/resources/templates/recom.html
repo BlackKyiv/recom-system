@@ -34,7 +34,7 @@
 </head>
 <body>
 
-<h1>Students with common disciplines</h1>
+<h1>Students with common disciplines (>0.7)</h1>
 <table id="student" class="table table-striped" style="width:100%">
     <thead class="table-dark">
     <tr>
@@ -68,13 +68,13 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="student: ${studentsWithCommon}">
-        <td th:text="${student.id}"></td>
-        <td th:text="${student.name}"></td>
-        <td th:text="${student.disciplines.size()}"></td>
+    <tr th:each="otherStudent: ${studentsWithCommon}">
+        <td th:text="${otherStudent.id}"></td>
+        <td th:text="${otherStudent.name}"></td>
+        <td th:text="${otherStudent.disciplines.size()}"></td>
         <td th:each="discipline: ${disciplines}"
-            th:text="${student.disciplines.contains(discipline) ? '✔' : '✖'}"
-            th:classappend="${student.disciplines.contains(discipline) ? 'text-success' : 'text-danger'}">
+            th:text="${otherStudent.disciplines.contains(discipline) ? '✔' : '✖'}"
+            th:classappend="${otherStudent.disciplines.contains(discipline) ? 'text-success' : 'text-danger'}">
         </td>
     </tr>
     </tbody>
@@ -84,18 +84,43 @@
 <br/>
 
 <h1>Students Characteristics Pearson Coeff</h1>
+<table id="coeffTarget" class="table table-striped" style="width:100%">
+    <thead class="table-dark">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th th:each="char: ${characteristics}"
+            th:text="${char.id + ' ' + char.name}"></th>
+        <th>P Coeff</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td th:text="${student.id}"></td>
+        <td th:text="${student.name}"></td>
+        <td th:each="charRate: ${studentChars}"
+            th:text="${charRate}"></td>
+        <td th:text="1.0"></td>
+        </td>
+    </tr>
+    </tbody>
+</table>
 <table id="coeff" class="table table-striped" style="width:100%">
     <thead class="table-dark">
     <tr>
         <th>ID</th>
         <th>Name</th>
+        <th th:each="char: ${characteristics}"
+            th:text="${char.id + ' ' + char.name}"></th>
         <th>P Coeff</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="student: ${studentsWithCommon}">
+    <tr th:each="student: ${commonStudentChars.keySet()}">
         <td th:text="${student.id}"></td>
         <td th:text="${student.name}"></td>
+        <td th:each="charRate: ${commonStudentChars.get(student)}"
+            th:text="${charRate}"></td>
         <td th:text="${stPearson.get(student)}"></td>
         </td>
     </tr>
